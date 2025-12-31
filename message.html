@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirim Pesan Romantis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Animated Background Hearts */
+        .bg-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 25px;
+            opacity: 0.2;
+            animation: floatUp 10s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.2;
+            }
+            90% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .message-container {
+            max-width: 550px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: fadeInScale 0.6s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .message-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .message-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        .message-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #fff;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.95rem;
+            font-family: 'Georgia', serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            max-height: 200px;
+        }
+
+
+
+        .submit-btn {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #ff6b9d, #c471ed);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+            margin-top: 5px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 18px;
+            text-align: center;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .message-container {
+                padding: 25px 20px;
+            }
+
+            .message-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .message-header p {
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                font-size: 0.9rem;
+                padding: 11px 13px;
+            }
+
+            .form-group textarea {
+                min-height: 100px;
+            }
+
+
+
+            .submit-btn {
+                font-size: 1rem;
+                padding: 13px 30px;
+            }
+
+            .info-box {
+                font-size: 0.8rem;
+                padding: 10px;
+            }
+
+            .nav-btn {
+                font-size: 0.85rem;
+                padding: 9px 16px;
+            }
+        }
+
+        /* Extra Small Phones */
+        @media (max-width: 375px) {
+            .message-header h1 {
+                font-size: 1.4rem;
+            }
+
+
+        }
+
+        /* Music Button */
+        .music-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 9999;
+            background: linear-gradient(135deg, #ff6b9d, #c471ed);
+            color: white;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 28px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(196,113,237,0.25);
+            font-weight: 700;
+        }
+
+        .music-btn:hover { transform: translateY(-3px); }
+
+        .music-hint { display: none; position: fixed; right: 20px; bottom: 78px; z-index: 9999; background: rgba(0,0,0,0.7); color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <div class="message-container">
+        <!-- Header -->
+        <div class="message-header">
+            <h1>Kirim Pesan Romantis</h1>
+            <p>Tulis pesan manismu, nanti akan langsung terkirim ke WhatsApp!</p>
+        </div>
+
+        <!-- Form -->
+        <form class="message-form" id="messageForm" onsubmit="sendToWhatsApp(event)">
+            <div class="form-group">
+                <label>Nama Kamu:</label>
+                <input type="text" id="senderName" placeholder="Siapa yang kirim pesan?" required>
+            </div>
+
+            <div class="form-group">
+                <label>Pesan Kamu:</label>
+                <textarea id="messageText" placeholder="Tulis pesan romantis, lucu, atau apapun yang pengen kamu sampein..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Kirim ke WhatsApp
+            </button>
+        </form>
+
+        <div class="info-box">
+            <strong>Catatan:</strong> Pesan akan dibuka di aplikasi WhatsApp kamu. Pastikan nomor target sudah benar di kode JavaScript!
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-buttons">
+            <a href="gallery.html" class="nav-btn">Galeri</a>
+            <a href="quiz.html" class="nav-btn">Quiz</a>
+            <a href="index.html" class="nav-btn">Home</a>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // KONFIGURASI NOMOR WHATSAPP TARGET
+        // ============================================
+        // Ganti dengan nomor WhatsApp pasangan Anda
+        // Format: 62 untuk Indonesia, tanpa tanda + dan tanpa 0 di depan
+        // Contoh:
+        const TARGET_WHATSAPP = '6289501978083'; // GANTI NOMOR INI!
+
+        // ============================================
+        // ANIMATED BACKGROUND HEARTS
+        // ============================================
+        const bgHeartsContainer = document.getElementById('bgHearts');
+        
+        function createBgHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.textContent = '';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 5 + 8) + 's';
+            heart.style.fontSize = (Math.random() * 15 + 20) + 'px';
+            bgHeartsContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+
+        // Generate hearts
+        setInterval(createBgHeart, 2000);
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createBgHeart, i * 400);
+        }
+
+
+
+        // ============================================
+        // SEND TO WHATSAPP
+        // ============================================
+        function sendToWhatsApp(event) {
+            event.preventDefault();
+
+            const senderName = document.getElementById('senderName').value.trim();
+            const messageText = document.getElementById('messageText').value.trim();
+
+            if (!senderName || !messageText) {
+                alert('Isi dulu semua field ya!');
+                return;
+            }
+
+            // Format pesan dengan formatting WhatsApp yang lebih bagus
+            const fullMessage = `*Pesan Romantis*
+
+Dari: *${senderName}*
+
+${messageText}
+
+━━━━━━━━━━━━━━━
+_Dikirim melalui Website Tahun Baru 2026_`;
+
+            // Encode untuk URL dengan proper encoding
+            const encodedMessage = encodeURIComponent(fullMessage).replace(/%0A/g, '%0a').replace(/%20/g, '%20');
+
+            // Buat WhatsApp URL
+            const whatsappURL = `https://wa.me/${TARGET_WHATSAPP}?text=${encodedMessage}`;
+
+            // Buka WhatsApp
+            window.open(whatsappURL, '_blank');
+
+            // Reset form
+            document.getElementById('messageForm').reset();
+
+            // Konfirmasi
+            setTimeout(() => {
+                alert('Pesan sudah dikirim ke WhatsApp! Cek aplikasimu ya');
+            }, 500);
+        }
+
+        // ============================================
+        // AUTO-FOCUS ON LOAD
+        // ============================================
+        window.addEventListener('load', () => {
+            document.getElementById('senderName').focus();
+        });
+    </script>
+
+    <button id="musicButton" class="music-btn">Music</button>
+    <div id="musicHint" class="music-hint">Klik tombol "Music" untuk melanjutkan pemutaran</div>
+
+    <script>
+        (function(){
+            function openPlayer(){
+                const win = window.open('music/player.html','musicPlayer','width=420,height=220');
+                if(win) {
+                    win.focus();
+                    try { win.postMessage({action:'play'}, '*'); } catch(e) {}
+                }
+                const hint = document.getElementById('musicHint');
+                if(hint) hint.style.display = 'none';
+            }
+            const btn = document.getElementById('musicButton');
+            if(btn) btn.addEventListener('click', openPlayer);
+
+            const hint = document.getElementById('musicHint');
+            if(localStorage.getItem('music_player_state_v1') === 'playing') {
+                if(hint) hint.style.display='none';
+            } else {
+                if(hint) hint.style.display='block';
+            }
+
+            window.addEventListener('storage', (e) => {
+                if(e.key === 'music_player_state_v1') {
+                    if(e.newValue === 'playing') {
+                        if(hint) hint.style.display='none';
+                    } else {
+                        if(hint) hint.style.display='block';
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2026! 🎆</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0e27, #1a1a2e, #16213e);
+            color: white;
+            position: relative;
+        }
+
+        /* Canvas untuk Kembang Api */
+        #fireworksCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Container Konten */
+        .content-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Judul Tahun Baru */
+        .main-title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                         0 0 60px rgba(255, 215, 0, 0.5);
+            margin-bottom: 30px;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        /* Foto Pasangan */
+        .celebration-photo {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid rgba(255, 215, 0, 0.8);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.6),
+                        0 0 100px rgba(255, 182, 193, 0.4);
+            margin-bottom: 40px;
+            animation: photoGlow 3s ease-in-out infinite;
+        }
+
+        /* Pesan Romantis */
+        .romantic-text {
+            max-width: 700px;
+            font-size: 1.8rem;
+            line-height: 1.8;
+            color: #ffb6c1;
+            text-shadow: 0 2px 15px rgba(255, 182, 193, 0.6);
+            margin-bottom: 20px;
+            animation: textFadeIn 2s ease-out;
+        }
+
+        .sub-text {
+            font-size: 1.3rem;
+            color: #ffd700;
+            margin-top: 30px;
+            animation: textFadeIn 2s ease-out 0.5s backwards;
+        }
+
+        /* Animasi Keyframes */
+        @keyframes titlePulse {
+            0%, 100% {
+                transform: scale(1);
+                text-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                             0 0 60px rgba(255, 215, 0, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                text-shadow: 0 0 40px rgba(255, 215, 0, 1),
+                             0 0 80px rgba(255, 215, 0, 0.7);
+            }
+        }
+
+        @keyframes photoGlow {
+            0%, 100% {
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.6),
+                            0 0 100px rgba(255, 182, 193, 0.4);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 70px rgba(255, 215, 0, 0.9),
+                            0 0 140px rgba(255, 182, 193, 0.6);
+                transform: scale(1.03);
+            }
+        }
+
+        @keyframes textFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsif Mobile */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .celebration-photo {
+                width: 180px;
+                height: 180px;
+            }
+
+            .romantic-text {
+                font-size: 1.3rem;
+            }
+
+            .sub-text {
+                font-size: 1rem;
+            }
+        }
+    /* Music Button */
+    .music-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 9999;
+        background: linear-gradient(135deg, #ff6b9d, #c471ed);
+        color: white;
+        padding: 10px 14px;
+        border: none;
+        border-radius: 28px;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(196,113,237,0.25);
+        font-weight: 700;
+    }
+
+    .music-btn:hover { transform: translateY(-3px); }
+
+    .music-hint { display: none; position: fixed; right: 20px; bottom: 78px; z-index: 9999; background: rgba(0,0,0,0.7); color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <!-- Canvas untuk Animasi Kembang Api -->
+    <canvas id="fireworksCanvas"></canvas>
+
+    <!-- Konten Perayaan -->
+    <div class="content-container">
+        <h1 class="main-title">🎉 HAPPY NEW YEAR 2026! 🎆</h1>
+        
+        <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=400&fit=crop" 
+             alt="Foto Pasangan" 
+             class="celebration-photo">
+        
+        <p class="romantic-text">
+            Semoga di tahun ini dan seterusnya,<br>
+            aku selalu bisa bikin kamu tersenyum ❤️
+        </p>
+        
+        <p class="sub-text">
+            Terima kasih sudah jadi bagian terbaik dalam hidupku 💕<br>
+            I love you more than words can say ✨
+        </p>
+    </div>
+
+    <script>
+        // ============================================
+        // ANIMASI KEMBANG API MENGGUNAKAN CANVAS
+        // ============================================
+
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set ukuran canvas
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Resize canvas saat window berubah
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Array untuk menyimpan partikel kembang api
+        let fireworks = [];
+        let particles = [];
+
+        // Kelas Kembang Api (roket yang meluncur)
+        class Firework {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height;
+                this.targetY = Math.random() * canvas.height * 0.5;
+                this.speed = Math.random() * 3 + 5;
+                this.exploded = false;
+                this.hue = Math.random() * 360;
+            }
+
+            update() {
+                if (!this.exploded) {
+                    this.y -= this.speed;
+                    
+                    // Cek apakah sudah mencapai target
+                    if (this.y <= this.targetY) {
+                        this.exploded = true;
+                        this.explode();
+                    }
+                }
+            }
+
+            draw() {
+                if (!this.exploded) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
+                    ctx.fill();
+                    
+                    // Trail effect
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x, this.y + 10);
+                    ctx.strokeStyle = `hsl(${this.hue}, 100%, 50%)`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            }
+
+            explode() {
+                // Buat 50-80 partikel saat meledak
+                const particleCount = Math.random() * 30 + 50;
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle(this.x, this.y, this.hue));
+                }
+            }
+        }
+
+        // Kelas Partikel (ledakan kembang api)
+        class Particle {
+            constructor(x, y, hue) {
+                this.x = x;
+                this.y = y;
+                this.hue = hue + Math.random() * 50 - 25;
+                
+                // Kecepatan acak ke segala arah
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 5 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                
+                this.gravity = 0.1;
+                this.friction = 0.98;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.015;
+                this.size = Math.random() * 3 + 2;
+            }
+
+            update() {
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.vy += this.gravity;
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                this.alpha -= this.decay;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            isDead() {
+                return this.alpha <= 0;
+            }
+        }
+
+        // Fungsi untuk meluncurkan kembang api baru
+        function launchFirework() {
+            fireworks.push(new Firework());
+        }
+
+        // Loop animasi utama
+        function animate() {
+            // Efek trail (tidak menghapus canvas sepenuhnya)
+            ctx.fillStyle = 'rgba(10, 14, 39, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Update dan gambar semua kembang api
+            for (let i = fireworks.length - 1; i >= 0; i--) {
+                fireworks[i].update();
+                fireworks[i].draw();
+                
+                // Hapus kembang api yang sudah meledak
+                if (fireworks[i].exploded) {
+                    fireworks.splice(i, 1);
+                }
+            }
+
+            // Update dan gambar semua partikel
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                
+                // Hapus partikel yang sudah mati
+                if (particles[i].isDead()) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Mulai animasi
+        animate();
+
+        // Peluncuran kembang api secara acak (setiap 0.5-1.5 detik)
+        setInterval(() => {
+            launchFirework();
+        }, Math.random() * 1000 + 500);
+
+        // Peluncuran kembang api tambahan untuk efek lebih ramai
+        setInterval(() => {
+            launchFirework();
+            setTimeout(() => launchFirework(), 200);
+        }, 2000);
+    </script>
+
+    <button id="musicButton" class="music-btn">Music</button>
+    <div id="musicHint" class="music-hint">Klik tombol "Music" untuk melanjutkan pemutaran</div>
+
+    <script>
+        (function(){
+            function openPlayer(){
+                const win = window.open('music/player.html','musicPlayer','width=420,height=220');
+                if(win) {
+                    win.focus();
+                    try { win.postMessage({action:'play'}, '*'); } catch(e) {}
+                }
+                const hint = document.getElementById('musicHint');
+                if(hint) hint.style.display = 'none';
+            }
+            const btn = document.getElementById('musicButton');
+            if(btn) btn.addEventListener('click', openPlayer);
+
+            const hint = document.getElementById('musicHint');
+            if(localStorage.getItem('music_player_state_v1') === 'playing') {
+                if(hint) hint.style.display='none';
+            } else {
+                if(hint) hint.style.display='block';
+            }
+
+            window.addEventListener('storage', (e) => {
+                if(e.key === 'music_player_state_v1') {
+                    if(e.newValue === 'playing') {
+                        if(hint) hint.style.display='none';
+                    } else {
+                        if(hint) hint.style.display='block';
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri Foto Kenangan Kita ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Partikel Hati Mengambang */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 18px;
+            opacity: 0;
+            animation: floatHeart 10s linear infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            animation: fadeInDown 0.8s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #ffe4f1;
+        }
+
+        /* Menu Navigasi */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+
+
+        /* Gallery Grid */
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Card Foto dengan Animasi */
+        .photo-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.6s ease-out backwards;
+            position: relative;
+        }
+
+        .photo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .photo-card:hover::before {
+            left: 100%;
+        }
+
+        .photo-card:nth-child(1) { animation-delay: 0.1s; }
+        .photo-card:nth-child(2) { animation-delay: 0.15s; }
+        .photo-card:nth-child(3) { animation-delay: 0.2s; }
+        .photo-card:nth-child(4) { animation-delay: 0.25s; }
+        .photo-card:nth-child(5) { animation-delay: 0.3s; }
+        .photo-card:nth-child(6) { animation-delay: 0.35s; }
+        .photo-card:nth-child(7) { animation-delay: 0.4s; }
+        .photo-card:nth-child(8) { animation-delay: 0.45s; }
+        .photo-card:nth-child(9) { animation-delay: 0.5s; }
+
+        .photo-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .photo-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .photo-card:hover img {
+            transform: scale(1.1) rotate(1deg);
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.6));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-card:hover .photo-overlay {
+            opacity: 1;
+        }
+
+        .photo-caption {
+            padding: 18px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-caption h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #ffd700;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-caption p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #ffe4f1;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .gallery-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 10px;
+            }
+
+            .photo-card img {
+                height: 250px;
+            }
+
+            .photo-caption h3 {
+                font-size: 1.1rem;
+            }
+
+            .photo-caption p {
+                font-size: 0.9rem;
+            }
+
+            .nav-btn {
+                font-size: 0.85rem;
+                padding: 9px 16px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .photo-card img {
+                height: 220px;
+            }
+
+            .photo-caption h3 {
+                font-size: 1rem;
+            }
+
+            .photo-caption p {
+                font-size: 0.85rem;
+            }
+        }
+    /* Music Button */
+    .music-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 9999;
+        background: linear-gradient(135deg, #ff6b9d, #c471ed);
+        color: white;
+        padding: 10px 14px;
+        border: none;
+        border-radius: 28px;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(196,113,237,0.25);
+        font-weight: 700;
+    }
+
+    .music-btn:hover { transform: translateY(-3px); }
+
+    .music-hint { display: none; position: fixed; right: 20px; bottom: 78px; z-index: 9999; background: rgba(0,0,0,0.7); color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <!-- Persistent Music is handled by the popup player (open with the Music button) -->
+
+    <!-- Floating Hearts Animation -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>📸 Galeri Kita</h1>
+        <p>❤️</p>
+        
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-btn">⬅ Home</a>
+            <a href="quiz.html" class="nav-btn">🎮 Quiz</a>
+            <a href="message.html" class="nav-btn">💌 Pesan</a>
+        </div>
+    </div>
+
+
+
+    <!-- Gallery Container -->
+    <div class="gallery-container">
+        <!-- Foto 1 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love1.jpeg" alt="Foto 1">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>❤️</h3>
+            </div>
+        </div>
+
+        <!-- Foto 2 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love2.jpeg" alt="Foto 2">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💕</h3>
+            </div>
+        </div>
+
+        <!-- Foto 3 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love3.jpeg" alt="Foto 3">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💖</h3>
+            </div>
+        </div>
+
+        <!-- Foto 4 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love5.jpeg" alt="Foto 4">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💗</h3>
+            </div>
+        </div>
+
+        <!-- Foto 5 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love6.jpeg" alt="Foto 5">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💝</h3>
+            </div>
+        </div>
+
+        <!-- Foto 6 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love7.jpeg" alt="Foto 6">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💓</h3>
+            </div>
+        </div>
+
+        <!-- Foto 7 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love8.jpeg" alt="Foto 7">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💞</h3>
+            </div>
+        </div>
+
+        <!-- Foto 8 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love9.jpeg" alt="Foto 8">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💘</h3>
+            </div>
+        </div>
+
+        <!-- Foto 9 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love10.jpeg" alt="Foto 9">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💑</h3>
+            </div>
+        </div>
+
+        <!-- Foto 10 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love11.jpeg" alt="Foto 10">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>👫</h3>
+            </div>
+        </div>
+
+        <!-- Foto 11 -->
+        <div class="photo-card">
+            <div class="photo-wrapper">
+                <img src="images/love12.jpeg" alt="Foto 11">
+                <div class="photo-overlay"></div>
+            </div>
+            <div class="photo-caption">
+                <h3>💏</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Floating hearts
+        const floatingHeartsContainer = document.getElementById('floatingHearts');
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = Math.random() > 0.5 ? '❤️' : '💕';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 5 + 8) + 's';
+            heart.style.fontSize = (Math.random() * 8 + 15) + 'px';
+            floatingHeartsContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+
+        setInterval(createHeart, 2500);
+        for (let i = 0; i < 4; i++) {
+            setTimeout(createHeart, i * 500);
+        }
+
+        // In-page toggle removed. Use the floating "Music" button (bottom-right) to open the persistent player popup.
+    </script>
+
+    <button id="musicButton" class="music-btn">Music</button>
+    <div id="musicHint" class="music-hint">Klik tombol "Music" untuk melanjutkan pemutaran</div>
+
+    <script>
+        (function(){
+            function openPlayer(){
+                const win = window.open('music/player.html','musicPlayer','width=420,height=220');
+                if(win) {
+                    win.focus();
+                    try { win.postMessage({action:'play'}, '*'); } catch(e) {}
+                }
+                const hint = document.getElementById('musicHint');
+                if(hint) hint.style.display = 'none';
+            }
+            const btn = document.getElementById('musicButton');
+            if(btn) btn.addEventListener('click', openPlayer);
+
+            const hint = document.getElementById('musicHint');
+            if(localStorage.getItem('music_player_state_v1') === 'playing') {
+                if(hint) hint.style.display='none';
+            } else {
+                if(hint) hint.style.display='block';
+            }
+
+            window.addEventListener('storage', (e) => {
+                if(e.key === 'music_player_state_v1') {
+                    if(e.newValue === 'playing') {
+                        if(hint) hint.style.display='none';
+                    } else {
+                        if(hint) hint.style.display='block';
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

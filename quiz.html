@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Seberapa Kenal Kamu? 🎮</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .quiz-container {
+            max-width: 650px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 30px 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header h1 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            text-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .quiz-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ff6b9d);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+        }
+
+        .question-section {
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .question-section.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .answers-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .answer-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(8px);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .answer-btn.correct {
+            background: rgba(76, 175, 80, 0.5);
+            border-color: #4caf50;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .answer-btn.wrong {
+            background: rgba(244, 67, 54, 0.5);
+            border-color: #f44336;
+            animation: wrongShake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .result-section {
+            display: none;
+            text-align: center;
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 6px solid #ffd700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 25px auto;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            color: #ffe4f1;
+        }
+
+        .result-message {
+            font-size: 1.3rem;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .result-emoji {
+            font-size: 4rem;
+            margin: 15px 0;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .quiz-container {
+                padding: 25px 20px;
+            }
+
+            .quiz-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .quiz-header p {
+                font-size: 0.9rem;
+            }
+
+            .question-text {
+                font-size: 1.3rem;
+            }
+
+            .answer-btn {
+                padding: 13px;
+                font-size: 0.95rem;
+            }
+
+            .score-circle {
+                width: 140px;
+                height: 140px;
+            }
+
+            .score-number {
+                font-size: 2.5rem;
+            }
+
+            .result-emoji {
+                font-size: 3rem;
+            }
+
+            .result-message {
+                font-size: 1.1rem;
+            }
+
+            .nav-btn {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .quiz-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+            }
+
+            .answer-btn {
+                font-size: 0.9rem;
+            }
+        }
+    /* Music Button */
+    .music-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 9999;
+        background: linear-gradient(135deg, #ff6b9d, #c471ed);
+        color: white;
+        padding: 10px 14px;
+        border: none;
+        border-radius: 28px;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(196,113,237,0.25);
+        font-weight: 700;
+    }
+
+    .music-btn:hover { transform: translateY(-3px); }
+
+    .music-hint { display: none; position: fixed; right: 20px; bottom: 78px; z-index: 9999; background: rgba(0,0,0,0.7); color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <!-- Header -->
+        <div class="quiz-header">
+            <h1>🎮 Seberapa Kenal Kamu?</h1>
+            <p>Mari uji pengetahuanmu tentang aku! 💕</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- Questions -->
+        <div id="quizQuestions">
+            <!-- Questions akan di-generate oleh JavaScript -->
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-section" id="resultSection">
+            <div class="result-emoji" id="resultEmoji"></div>
+            <div class="score-circle">
+                <div class="score-number" id="scoreNumber">0</div>
+                <div class="score-label">dari <span id="totalQuestions">0</span></div>
+            </div>
+            <div class="result-message" id="resultMessage"></div>
+            
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="restartQuiz()">🔄 Main Lagi</button>
+                <a href="gallery.html" class="nav-btn">📸 Galeri</a>
+                <a href="index.html" class="nav-btn">🏠 Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // DATA PERTANYAAN QUIZ
+        // ============================================
+        const quizData = [
+            {
+                question: "Apa makanan favoritku?",
+                answers: ["Pizza 🍕", "Nasi Goreng 🍛", "Sushi 🍣", "Burger 🍔"],
+                correct: 1
+            },
+            {
+                question: "Warna apa yang paling aku suka?",
+                answers: ["Merah ❤️", "Biru 💙", "Pink 💕", "Hitam 🖤"],
+                correct: 3
+            },
+            {
+                question: "Apa hobiiku?",
+                answers: ["Membaca 📚", "game", "Menyanyi 🎤", "Olahraga ⚽"],
+                correct: 1
+            },
+            {
+                question: "Film genre apa yang aku suka?",
+                answers: ["Horror 👻", "Comedy 😂", "Romance 💕", "Action 💥"],
+                correct: 3
+            },
+            {
+                question: "Apa minuman kesukaanku?",
+                answers: ["Kopi ☕", "Teh 🍵", "Jus 🥤", "Air Putih 💧"],
+                correct: 3
+            },
+            {
+                question: "Kapan tanggal lahirku?",
+                answers: ["15 Januari", "20 Maret", "10 Juni", "28 Oktober"],
+                correct: 3
+            },
+            {
+                question: "Apa yang paling aku takuti?",
+                answers: ["Ketinggian 🏔️", "Gelap 🌑", "Serangga 🦗", "Hantu 👻"],
+                correct: 2
+            },
+            {
+                question: "Destinasi impianku untuk liburan?",
+                answers: ["Jepang 🇯🇵", "Paris 🇫🇷", "China", "Korea 🇰🇷", "Rumah mu"],
+                correct: 4
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answeredQuestions = [];
+
+        // ============================================
+        // INITIALIZE QUIZ
+        // ============================================
+        function initQuiz() {
+            const questionsContainer = document.getElementById('quizQuestions');
+            questionsContainer.innerHTML = '';
+
+            quizData.forEach((data, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-section';
+                if (index === 0) questionDiv.classList.add('active');
+
+                questionDiv.innerHTML = `
+                    <div class="question-number">Pertanyaan ${index + 1} dari ${quizData.length}</div>
+                    <div class="question-text">${data.question}</div>
+                    <div class="answers-grid">
+                        ${data.answers.map((answer, answerIndex) => `
+                            <button class="answer-btn" onclick="selectAnswer(${index}, ${answerIndex})">
+                                ${answer}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+
+                questionsContainer.appendChild(questionDiv);
+            });
+
+            updateProgress();
+        }
+
+        // ============================================
+        // SELECT ANSWER
+        // ============================================
+        function selectAnswer(questionIndex, answerIndex) {
+            if (answeredQuestions.includes(questionIndex)) return;
+            answeredQuestions.push(questionIndex);
+
+            const questionSection = document.querySelectorAll('.question-section')[questionIndex];
+            const answerButtons = questionSection.querySelectorAll('.answer-btn');
+            const correctIndex = quizData[questionIndex].correct;
+
+            answerButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+            if (answerIndex === correctIndex) {
+                answerButtons[answerIndex].classList.add('correct');
+                score++;
+            } else {
+                answerButtons[answerIndex].classList.add('wrong');
+                answerButtons[correctIndex].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+                updateProgress();
+
+                if (currentQuestion < quizData.length) {
+                    showQuestion(currentQuestion);
+                } else {
+                    showResult();
+                }
+            }, 1500);
+        }
+
+        function showQuestion(index) {
+            const questions = document.querySelectorAll('.question-section');
+            questions.forEach((q, i) => {
+                q.classList.remove('active');
+                if (i === index) {
+                    q.classList.add('active');
+                }
+            });
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / quizData.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showResult() {
+            document.getElementById('quizQuestions').style.display = 'none';
+            document.getElementById('resultSection').classList.add('active');
+            document.getElementById('scoreNumber').textContent = score;
+            document.getElementById('totalQuestions').textContent = quizData.length;
+
+            let emoji, message;
+            const percentage = (score / quizData.length) * 100;
+
+            if (percentage === 100) {
+                emoji = '🏆';
+                message = 'PERFECT! Kamu benar-benar kenal aku banget! Aku speechless deh 🥰';
+            } else if (percentage >= 75) {
+                emoji = '🎉';
+                message = 'Keren banget! Kamu kenal aku dengan baik! Keep it up sayang 💕';
+            } else if (percentage >= 50) {
+                emoji = '😊';
+                message = 'Lumayan nih!  😄';
+            } else if (percentage >= 25) {
+                emoji = '😅';
+                message = 'Waduh, kayaknya perlu lebih banyak quality time nih kita! 😂';
+            } else {
+                emoji = '😱';
+                message = 'Hahaha! Ayo dong, perhatiin aku lebih banyak lagi! 🙈';
+            }
+
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answeredQuestions = [];
+            document.getElementById('quizQuestions').style.display = 'block';
+            document.getElementById('resultSection').classList.remove('active');
+            initQuiz();
+        }
+
+        initQuiz();
+    </script>
+
+    <button id="musicButton" class="music-btn">Music</button>
+    <div id="musicHint" class="music-hint">Klik tombol "Music" untuk melanjutkan pemutaran</div>
+
+    <script>
+        (function(){
+            function openPlayer(){
+                const win = window.open('music/player.html','musicPlayer','width=420,height=220');
+                if(win) {
+                    win.focus();
+                    try { win.postMessage({action:'play'}, '*'); } catch(e) {}
+                }
+                const hint = document.getElementById('musicHint');
+                if(hint) hint.style.display = 'none';
+            }
+            const btn = document.getElementById('musicButton');
+            if(btn) btn.addEventListener('click', openPlayer);
+
+            const hint = document.getElementById('musicHint');
+            if(localStorage.getItem('music_player_state_v1') === 'playing') {
+                if(hint) hint.style.display='none';
+            } else {
+                if(hint) hint.style.display='block';
+            }
+
+            window.addEventListener('storage', (e) => {
+                if(e.key === 'music_player_state_v1') {
+                    if(e.newValue === 'playing') {
+                        if(hint) hint.style.display='none';
+                    } else {
+                        if(hint) hint.style.display='block';
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
