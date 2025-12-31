@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Music Player</title>
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; background: #111; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
+        .player { text-align:center; max-width:360px; width:90%; }
+        audio { width:100%; outline:none; }
+        .controls { margin-top:12px; display:flex; gap:8px; justify-content:center; }
+        button { padding:8px 12px; border-radius:6px; border: none; cursor:pointer; }
+        .btn-play { background:#4caf50; color:#fff }
+        .btn-pause { background:#f44336; color:#fff }
+        .btn-close { background:#777; color:#fff }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <h2>Music Player</h2>
+        <audio id="audio" src="13.mp3" preload="auto"></audio>
+        <div class="controls">
+            <button id="play" class="btn-play">Play</button>
+            <button id="pause" class="btn-pause">Pause</button>
+            <button id="close" class="btn-close">Close</button>
+        </div>
+        <p id="status">Ready</p>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('play');
+        const pauseBtn = document.getElementById('pause');
+        const closeBtn = document.getElementById('close');
+        const status = document.getElementById('status');
+
+        // Load position from localStorage (if any) so reopening uses last position
+        const STORAGE_KEY = 'music_player_pos_v1';
+        const STATE_KEY = 'music_player_state_v1';
+
+        // Try to restore last time
+        const savedPos = parseFloat(localStorage.getItem(STORAGE_KEY));
+        if (!isNaN(savedPos)) {
+            audio.currentTime = savedPos;
+        }
+
+        const savedState = localStorage.getItem(STATE_KEY);
+
+        playBtn.addEventListener('click', async () => {
+            try {
+                await audio.play();
+                status.textContent = 'Playing';
+                localStorage.setItem(STATE_KEY, 'playing');
+            } catch (err) {
+                status.textContent = 'Play blocked by browser';
+            }
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            audio.pause();
+            status.textContent = 'Paused';
+            localStorage.setItem(STATE_KEY, 'paused');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            window.close();
+        });
+
+        // Handle messages from opener window (e.g., request to play)
+        window.addEventListener('message', (e) => {
+            try {
+                const data = e.data || {};
+                if (data.action === 'play') {
+                    audio.play().then(() => {
+                        status.textContent = 'Playing';
+                        localStorage.setItem(STATE_KEY, 'playing');
+                    }).catch(() => {
+                        status.textContent = 'Play blocked';
+                    });
+                } else if (data.action === 'pause') {
+                    audio.pause();
+                    status.textContent = 'Paused';
+                    localStorage.setItem(STATE_KEY, 'paused');
+                }
+            } catch (err) {
+                // ignore
+            }
+        });
+
+        // Persist current time every second
+        setInterval(() => {
+            if (!isNaN(audio.currentTime)) {
+                localStorage.setItem(STORAGE_KEY, audio.currentTime);
+            }
+        }, 1000);
+
+        // If saved state was playing, try to autoplay (will only work if user gesture previously allowed)
+        if (savedState === 'playing') {
+            audio.play().then(() => {
+                status.textContent = 'Playing';
+            }).catch(() => {
+                status.textContent = 'Click Play to resume';
+            });
+        }
+
+        // For convenience, focus window
+        window.focus();
+
+        // When closing popup, persist that it's paused so main page hints the user
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem(STATE_KEY, 'paused');
+            if (!isNaN(audio.currentTime)) localStorage.setItem(STORAGE_KEY, audio.currentTime);
+        });
+    </script>
+</body>
+</html>
